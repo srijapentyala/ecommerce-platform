@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS stock (
+    sku VARCHAR(128) PRIMARY KEY,
+    qty INTEGER NOT NULL CHECK (qty >= 0)
+);
+
+CREATE TABLE IF NOT EXISTS reservations (
+    order_id VARCHAR(36) PRIMARY KEY,
+    sku      VARCHAR(128) NOT NULL,
+    qty      INTEGER NOT NULL,
+    state    VARCHAR(16) NOT NULL
+);

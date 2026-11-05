@@ -1,0 +1,8 @@
+target/
+.m2/
+.mvn/sandbox-settings.xml
+.idea/
+*.iml
+.DS_Store
+__pycache__/
+results/.*

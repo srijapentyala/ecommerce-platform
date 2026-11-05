@@ -1,0 +1,42 @@
+server:
+  shutdown: graceful
+  port: 8081
+spring:
+  application:
+    name: order-service
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/shop}
+    username: ${DATABASE_USER:shop}
+    password: ${DATABASE_PASSWORD:shop}
+    hikari:
+      maximum-pool-size: ${DB_POOL_SIZE:32}
+  sql:
+    init:
+      mode: always
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      # A cache that takes longer than this to answer has stopped being useful.
+      timeout: 200ms
+      connect-timeout: 200ms
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
+    consumer:
+      group-id: order-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.shop.common
+        spring.json.value.default.type: com.shop.common.PaymentCompleted
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      properties:
+        # Without this, a missing broker holds an HTTP request for a full minute.
+        max.block.ms: 2000
+shop:
+  inventory-url: ${INVENTORY_URL:http://localhost:8082}
+  cache:
+    enabled: ${CACHE_ENABLED:true}
